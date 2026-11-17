@@ -101,7 +101,12 @@ async function handleGet(req, res, code, file) {
 }
 
 async function handlePut(req, res, code, file) {
-  send(res, 501, 'PUT ще не реалізовано');
+  const body = await readBody(req);
+  if (body.length === 0) {
+    return send(res, 400, 'Тіло запиту порожнє: потрібно передати картинку');
+  }
+  await saveToCache(file, body);
+  send(res, 201, `Картинку для коду ${code} збережено в кеш`);
 }
 
 async function handleDelete(req, res, code, file) {
