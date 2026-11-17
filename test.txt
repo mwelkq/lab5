@@ -1,0 +1,13 @@
+node main.js -h 127.0.0.1 -p 3000
+node main.js -h 127.0.0.1 -p 3000 -c ./cache
+curl.exe -s -D - -o NUL http://127.0.0.1:3000/404
+curl.exe -s -D - -o NUL http://127.0.0.1:3000/404
+curl.exe -i http://127.0.0.1:3000/999
+curl.exe -i http://127.0.0.1:3000/abc
+curl.exe -i -X PUT --data-binary "@samples/minion.jpg" -H "Content-Type: image/jpeg" http://127.0.0.1:3000/404
+curl.exe -s -D - -o from_cache.jpg http://127.0.0.1:3000/404
+curl.exe -i -X PUT http://127.0.0.1:3000/404
+curl.exe -i -X DELETE http://127.0.0.1:3000/404
+curl.exe -i -X DELETE http://127.0.0.1:3000/404
+curl.exe -i -X POST http://127.0.0.1:3000/404
+curl.exe -i -X PATCH http://127.0.0.1:3000/404
