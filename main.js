@@ -68,9 +68,36 @@ async function saveToCache(file, data) {
   }
 }
 
-// ---------- Обробники методів (поки заглушки) ----------
+// ---------- Обробники методів ----------
 async function handleGet(req, res, code, file) {
-  send(res, 501, 'GET ще не реалізовано');
+  // 1. Пробуємо кеш
+  try {
+    const cached = await fs.readFile(file);
+    return sendImage(res, cached, 'cache');
+  } catch (err) {
+    if (err.code !== 'ENOENT') throw err;
+  }
+
+  // 2. У кеші немає — йдемо на http.cat
+  let image;
+  try {
+    const response = await superagent
+      .get(`https://http.cat/${code}`)
+      .responseType('blob')
+      .timeout({ response: 10000, deadline: 20000 });
+    image = response.body;
+  } catch (err) {
+    const reason = err.status || err.code || err.message;
+    return send(res, 404, `Картинку для коду ${code} не знайдено (http.cat: ${reason})`);
+  }
+
+  if (!Buffer.isBuffer(image) || image.length === 0) {
+    return send(res, 404, `http.cat не повернув картинку для коду ${code}`);
+  }
+
+  // 3. Спочатку зберігаємо в кеш, потім віддаємо клієнту
+  await saveToCache(file, image);
+  sendImage(res, image, 'http.cat');
 }
 
 async function handlePut(req, res, code, file) {
