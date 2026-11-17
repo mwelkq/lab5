@@ -110,7 +110,15 @@ async function handlePut(req, res, code, file) {
 }
 
 async function handleDelete(req, res, code, file) {
-  send(res, 501, 'DELETE ще не реалізовано');
+  try {
+    await fs.unlink(file);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return send(res, 404, `Картинки для коду ${code} немає в кеші`);
+    }
+    throw err;
+  }
+  send(res, 200, `Картинку для коду ${code} видалено з кешу`);
 }
 
 const handlers = new Map([
