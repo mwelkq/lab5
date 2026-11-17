@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/mwelkq/lab5/issues"
   },
-  "homepage": "https://github.com/mwelkq/lab5#readme"
+  "homepage": "https://github.com/mwelkq/lab5#readme",
+  "dependencies": {
+    "commander": "^15.1.0",
+    "superagent": "^10.4.2"
+  }
 }
